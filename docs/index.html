@@ -3,25 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0d0a0b">
+  <meta name="theme-color" content="#0b0708">
+  <meta name="description" content="Balıkesirspor için hazırlanmış dijital arşiv.">
   <title>Balkes Arşivi</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="hero">
-    <h1>Balkes Arşivi</h1>
-    <p>Kapatılan Balkes Arşivi projesinden kurtarılan verilerle yapılmış Balıkesirspor arşivi.</p>
-    <a class="app-link" href="https://github.com/Sinanjam/Balkes-Arsivi/releases/latest" target="_blank" rel="noopener">Balkes Arşivi Mobil Uygulaması</a>
+    <div class="hero-shell">
+      <div class="hero-copy">
+        <div class="archive-mark">Dijital Balıkesirspor Arşivi</div>
+        <h1>Balkes Arşivi</h1>
+        <p>Kapatılan Balkes Arşivi projesinden kurtarılan verilerle yapılmış Balıkesirspor arşivi.</p>
+      </div>
+
+      <aside class="hero-action" aria-label="Mobil uygulama">
+        <span class="app-kicker">Son sürüm APK</span>
+        <a class="app-link" href="https://github.com/Sinanjam/Balkes-Arsivi/releases/latest" target="_blank" rel="noopener">
+          <span class="app-icon">⌄</span>
+          <span>
+            <b>Balkes Arşivi Mobil Uygulaması</b>
+            <small>GitHub latest release</small>
+          </span>
+        </a>
+      </aside>
+    </div>
   </header>
+
   <main class="shell">
-    <section class="toolbar">
-      <input id="search" placeholder="Arşivde ara...">
+    <section class="toolbar" aria-label="Arşiv arama">
+      <input id="search" placeholder="Arşivde ara..." autocomplete="off">
       <button onclick="location.reload()">Yenile</button>
     </section>
+
     <div class="count" id="count">Yükleniyor...</div>
     <section id="detail" class="detail"></section>
     <section id="grid" class="grid"></section>
   </main>
+
   <footer>Balkes Arşivi</footer>
   <script src="data.js"></script>
   <script src="app.js"></script>

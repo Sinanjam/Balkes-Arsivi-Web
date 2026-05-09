@@ -263,7 +263,7 @@ function openItem(id) {
 function boot() {
   const toolbar = document.querySelector(".toolbar");
   if (toolbar && !toolbar.querySelector(".search-wrap")) {
-    toolbar.innerHTML = `<div class="search-wrap"><input id="search" placeholder="Arşivde ara..." autocomplete="off"><button class="clear-btn" onclick="clearSearch()">Temizle</button></div>`;
+    toolbar.innerHTML = `<input id="search" placeholder="Arşivde ara..." autocomplete="off"><button class="clear-btn" onclick="clearSearch()">Temizle</button>`;
   }
   search = document.querySelector("#search");
   window.search = search;
