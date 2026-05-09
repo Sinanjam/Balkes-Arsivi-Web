@@ -22,20 +22,38 @@ jobs:
     steps:
       - name: Checkout web repo
         uses: actions/checkout@v4
+
       - name: Checkout main archive repo
         uses: actions/checkout@v4
         with:
           repository: Sinanjam/Balkes-Arsivi
-          token: ${{ secrets.MAIN_REPO_TOKEN }}
           path: mainrepo
+
       - name: Build static site
         run: python3 tools/build_site.py mainrepo public
-          python3 tools/post_clean_site.py public
+
+      - name: Assert no URL-only cards
+        run: |
+          python3 - <<'PY'
+          import json, re, sys
+          from pathlib import Path
+          items=json.loads(Path("public/data/items.json").read_text(encoding="utf-8"))
+          bad=re.compile(r"(https?://|www\.|web\.archive\.org|balkesarsivi\.com|/user/cimage|user/cimage|cimage/|\.(gif|jpg|jpeg|png|webp)(\s|$|/|\?|-))", re.I)
+          broken=[x for x in items if bad.search(x.get("title","")) or bad.search(x.get("summary",""))]
+          print("item_count=", len(items), "broken=", len(broken))
+          if broken:
+              for x in broken[:20]:
+                  print("BROKEN", x.get("title"))
+              sys.exit(1)
+          PY
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
