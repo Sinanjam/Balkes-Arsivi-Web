@@ -1,8 +1,10 @@
 # Balkes Arşivi Web
 
-Bu repo web arayüzünü üretir. Veriler her build'de ana uygulama reposundan okunur:
+Bu site doğrudan `docs/` klasöründen yayınlanır.
 
+Veri üretimi:
 - Ana repo: https://github.com/Sinanjam/Balkes-Arsivi
-- Site: https://sinanjam.github.io/Balkes-Arsivi-Web/
+- Kaynak: app/src/main/assets/archive/archive_items.json
+- Görseller: ana repodaki raw GitHub asset yollarından lazy-load edilir.
 
-Hız için medya dosyaları web repoya kopyalanmaz; görseller ana repodaki raw GitHub dosyalarından lazy-load edilir.
+Site: https://sinanjam.github.io/Balkes-Arsivi-Web/
