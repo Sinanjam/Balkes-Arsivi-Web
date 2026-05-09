@@ -29,21 +29,23 @@ jobs:
           repository: Sinanjam/Balkes-Arsivi
           path: mainrepo
 
-      - name: Build static site
+      - name: Build static site from app repo assets
         run: python3 tools/build_site.py mainrepo public
 
-      - name: Assert no URL-only cards
+      - name: Assert no broken CSS or URL cards
         run: |
           python3 - <<'PY'
           import json, re, sys
           from pathlib import Path
-          items=json.loads(Path("public/data/items.json").read_text(encoding="utf-8"))
-          bad=re.compile(r"(https?://|www\.|web\.archive\.org|balkesarsivi\.com|/user/cimage|user/cimage|cimage/|\.(gif|jpg|jpeg|png|webp)(\s|$|/|\?|-))", re.I)
-          broken=[x for x in items if bad.search(x.get("title","")) or bad.search(x.get("summary",""))]
-          print("item_count=", len(items), "broken=", len(broken))
+          items=json.loads(Path('public/data/items.json').read_text(encoding='utf-8'))
+          bad=re.compile(r'(font-family|font-size|font-weight|https?://|www\.|web\.archive\.org|balkesarsivi\.com|/user/cimage|user/cimage|cimage/|\.(gif|jpg|jpeg|png|webp)(\s|$|/|\?|-))', re.I)
+          broken=[x for x in items if bad.search(x.get('title','')) or bad.search(x.get('summary',''))]
+          print('item_count=', len(items), 'broken=', len(broken))
+          if len(items) < 20:
+              print('HATA: Ana repodan yeterli içerik üretilemedi.')
+              sys.exit(1)
           if broken:
-              for x in broken[:20]:
-                  print("BROKEN", x.get("title"))
+              for x in broken[:20]: print('BROKEN', x.get('title'))
               sys.exit(1)
           PY
 
