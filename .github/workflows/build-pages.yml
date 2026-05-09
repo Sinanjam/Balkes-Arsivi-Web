@@ -30,6 +30,7 @@ jobs:
           path: mainrepo
       - name: Build static site
         run: python3 tools/build_site.py mainrepo public
+          python3 tools/post_clean_site.py public
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
