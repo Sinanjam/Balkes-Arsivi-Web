@@ -13,3 +13,11 @@ input,button{font:inherit;border-radius:16px;padding:13px 15px}input{background:
 .notice{border:1px dashed #684047;background:#130e10;border-radius:18px;color:#d8cbc7;padding:13px 15px;margin:16px 0}.table-card{background:#120e10;border:1px solid var(--line);border-radius:22px;padding:14px;margin:20px 0;overflow:auto}.table-card h3{margin:0 0 12px;color:#fff}.table-card table{border-collapse:collapse;min-width:720px;width:100%;font-size:15px}.table-card th,.table-card td{border:1px solid #493238;padding:9px 10px;text-align:left}.table-card th{background:#2b1a1f;color:#fff}.table-card tr:nth-child(even) td{background:#1a1315}
 .match-grid,.standing-grid{display:grid;gap:10px}.match-card,.standing-card{border:1px solid #493238;background:#171113;border-radius:16px;padding:12px}.match-card .score{font-size:24px;font-weight:900;color:#fff}.standing-card b{font-size:18px;color:#fff}.small{font-size:13px;color:#b9aaa5}.empty{padding:24px;border:1px solid var(--line);background:var(--panel);border-radius:24px}footer{color:#a99b97;text-align:center;padding:34px}
 @media(max-width:720px){.toolbar{grid-template-columns:1fr;top:0;border-radius:0 0 22px 22px;margin-left:-16px;margin-right:-16px}.grid{grid-template-columns:1fr}.card{min-height:unset}.table-card table{font-size:14px;min-width:640px}.article-page{border-radius:20px;padding:18px}.para{padding:14px}}
+
+
+.app-link{display:inline-flex;align-items:center;justify-content:center;margin-top:22px;padding:13px 16px;border-radius:16px;background:linear-gradient(135deg,var(--red),var(--red2));border:1px solid #e0223f;color:white;text-decoration:none;font-weight:900;box-shadow:0 14px 34px rgba(0,0,0,.28)}
+.app-link:hover{filter:brightness(1.08);transform:translateY(-1px);transition:.18s ease}
+.search-wrap{display:grid;grid-template-columns:1fr auto;gap:10px;width:100%}
+.clear-btn{background:#21181b!important;border-color:#493238!important;color:#eadbd6!important}
+.empty{padding:26px;border:1px solid var(--line);background:var(--panel);border-radius:24px;color:var(--muted);line-height:1.65}
+@media(max-width:720px){.search-wrap{grid-template-columns:1fr}.app-link{width:100%}}
