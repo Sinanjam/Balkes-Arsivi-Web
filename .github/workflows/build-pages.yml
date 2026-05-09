@@ -23,28 +23,29 @@ jobs:
       - name: Checkout web repo
         uses: actions/checkout@v4
 
-      - name: Checkout full main archive repo
+      - name: Checkout main archive repo
         uses: actions/checkout@v4
         with:
           repository: Sinanjam/Balkes-Arsivi
           path: mainrepo
           fetch-depth: 1
 
-      - name: Build full static site from app repo
-        run: python3 tools/build_full_site.py mainrepo public
+      - name: Build fast app-layout site
+        run: python3 tools/build_app_layout_site.py mainrepo public
 
-      - name: Assert full data exists
+      - name: Assert app data and photo refs exist
         run: |
           python3 - <<'PY'
-          import json, sys
+          import json
           from pathlib import Path
-          items=json.loads(Path("public/data/items.json").read_text(encoding="utf-8"))
+          data=json.loads(Path("public/data/items.json").read_text(encoding="utf-8"))
+          items=data.get("items",[])
           photos=sum(len(x.get("photos",[])) for x in items)
           tables=sum(len(x.get("tables",[])) for x in items)
-          print("items=",len(items),"photos=",photos,"tables=",tables)
+          print("items=",len(items),"photo_refs=",photos,"tables=",tables)
           assert len(items) > 10
           assert photos > 10
-          assert Path("public/assets/archive/archive_items.json").exists()
+          assert data.get("rawBase","").startswith("https://raw.githubusercontent.com/")
           PY
 
       - name: Configure Pages
