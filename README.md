@@ -1,5 +1,8 @@
 # Balkes Arşivi Web
 
-Bu repo, Sinanjam/Balkes-Arsivi uygulama reposundaki yerel arşiv verilerinden otomatik üretilen koyu temalı responsive web sitesidir.
+Bu repo sadece web üretici katmanıdır. Site, her build'de ana uygulama reposunu komple çekerek üretilir:
 
-Site: https://sinanjam.github.io/Balkes-Arsivi-Web/
+- Kaynak repo: https://github.com/Sinanjam/Balkes-Arsivi
+- Web site: https://sinanjam.github.io/Balkes-Arsivi-Web/
+
+Veri kopyalama/senkron tutma yoktur; GitHub Actions ana repoyu her seferinde yeniden checkout eder.

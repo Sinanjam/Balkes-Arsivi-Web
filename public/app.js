@@ -1,66 +1,15 @@
 
-let ITEMS=[];
-const mediaPrefix="media/";
-const $=s=>document.querySelector(s);
-const grid=$("#grid"), detail=$("#detail"), search=$("#search");
-
-function esc(s){return (s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
-function mediaPath(p){ if(!p) return ""; return mediaPrefix + p.replace(/^.*?assets\//,"").replace(/^app\/src\/main\/assets\//,"").replace(/^\/+/,""); }
-function placeholder(){ return `<div class="thumb"><span>1966</span></div>`; }
-function thumb(item){
-  const img=(item.images||[])[0];
-  return img ? `<div class="thumb"><img loading="lazy" src="${esc(mediaPath(img))}" onerror="this.parentElement.innerHTML='<span>1966</span>'"></div>` : placeholder();
-}
-function card(item){
-  return `<article class="card" onclick="openItem('${esc(item.id)}')">
-    ${thumb(item)}
-    <div class="content"><h2>${esc(item.title)}</h2><p>${esc(item.summary)}</p></div>
-    <div class="meta">Balkes Arşivi</div>
-  </article>`;
-}
-function renderList(){
-  const q=(search.value||"").toLocaleLowerCase("tr");
-  const arr=ITEMS.filter(x=>(x.title+" "+x.summary+" "+x.text).toLocaleLowerCase("tr").includes(q));
-  detail.classList.remove("active");
-  grid.style.display="grid";
-  grid.innerHTML=arr.length?arr.map(card).join(""):`<div class="empty">Sonuç bulunamadı.</div>`;
-}
-function paragraphs(text){
-  return (text||"").split(/\n{2,}/).map(p=>p.trim()).filter(Boolean);
-}
-function articleHtml(item){
-  const imgs=(item.images||[]).slice(0,6);
-  const ps=paragraphs(item.text);
-  let out="";
-  ps.forEach((p,i)=>{
-    out += `<p>${esc(p).replace(/\n/g,"<br>")}</p>`;
-    if(imgs[i]){
-      out += `<img loading="lazy" src="${esc(mediaPath(imgs[i]))}"><div class="caption">Arşiv görseli</div>`;
-    }
-  });
-  if(!imgs.length){
-    out = `<div class="thumb" style="height:220px;border-radius:22px;margin-bottom:14px"><span>1966</span></div><div class="caption">Temsilidir</div>` + out;
-  }
-  return out;
-}
-function openItem(id){
-  const item=ITEMS.find(x=>x.id===id);
-  if(!item) return;
-  grid.style.display="none";
-  detail.classList.add("active");
-  detail.innerHTML=`<div class="topline"><button onclick="renderList()">← Arşive dön</button><span class="badge">Balkes Arşivi</span></div>
-    <h1>${esc(item.title)}</h1>
-    <div class="article">${articleHtml(item)}</div>`;
-  location.hash=id;
-  scrollTo({top:0,behavior:"smooth"});
-}
-async function boot(){
-  ITEMS=await fetch("data/items.json",{cache:"no-store"}).then(r=>r.json());
-  $("#count").textContent=ITEMS.length+" içerik";
-  search.addEventListener("input", renderList);
-  if(location.hash.length>1){
-    const id=decodeURIComponent(location.hash.slice(1));
-    renderList(); openItem(id);
-  }else renderList();
-}
+let ITEMS=[]; const $=s=>document.querySelector(s); const grid=$("#grid"), detail=$("#detail"), search=$("#search");
+const esc=s=>(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+const asset=p=>p?("assets/"+String(p).replace(/^\/+/,"")):"";
+function ph(){return `<div class="thumb"><span>1966</span></div>`}
+function thumb(it){let p=it.imageAsset||(it.photos&&it.photos[0]&&it.photos[0].asset);return p?`<div class="thumb"><img loading="lazy" src="${esc(asset(p))}" onerror="this.parentElement.innerHTML='<span>1966</span>'"></div>`:ph()}
+function card(it){return `<article class="card" onclick="openItem('${esc(it.id)}')">${thumb(it)}<div class="content"><h2>${esc(it.title)}</h2><p>${esc(it.summary)}</p></div><div class="meta">${esc(it.season||"Balkes Arşivi")} · ${it.imageCount||0} foto · ${it.tables?.length||0} tablo</div></article>`}
+function renderList(){let q=(search.value||"").toLocaleLowerCase("tr");let arr=ITEMS.filter(x=>(x.title+" "+x.summary+" "+x.content).toLocaleLowerCase("tr").includes(q));detail.classList.remove("active");grid.style.display="grid";grid.innerHTML=arr.length?arr.map(card).join(""):`<div class="empty">Sonuç bulunamadı.</div>`}
+function mdTable(md){let lines=(md||"").split(/\n/).filter(l=>l.includes("|")); if(!lines.length)return""; let rows=lines.map(l=>l.trim().replace(/^\||\|$/g,"").split("|").map(c=>c.trim())); rows=rows.filter(r=>!r.every(c=>/^:?-{3,}:?$/.test(c)||c==="")); if(!rows.length)return""; let head=rows[0], body=rows.slice(1); return `<table><thead><tr>${head.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${body.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>`}
+function article(it){let parts=(it.content||"").split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);return parts.map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("")}
+function gallery(it){let ps=(it.photos||[]).slice(0,80); if(!ps.length)return`<div class="thumb" style="height:220px;border-radius:22px;margin-bottom:10px"><span>1966</span></div><div class="caption">Temsilidir</div>`; let lead=ps[0]; let rest=ps.slice(1); return `<img class="lead-img" src="${esc(asset(lead.asset))}"><div class="caption">${esc(lead.caption||"Arşiv görseli")}</div>${rest.length?`<section class="gallery">${rest.map(p=>`<figure><img loading="lazy" src="${esc(asset(p.asset))}"><figcaption>${esc(p.caption||"Arşiv görseli")}</figcaption></figure>`).join("")}</section>`:""}`}
+function tables(it){let ts=it.tables||[]; if(!ts.length)return""; return `<section class="table-section"><h2>Tablolar</h2>${ts.map(t=>`<div class="table-card"><h3>${esc(t.title||"Tablo")}</h3>${mdTable(t.markdown)}</div>`).join("")}</section>`}
+function openItem(id){let it=ITEMS.find(x=>x.id===id);if(!it)return;grid.style.display="none";detail.classList.add("active");detail.innerHTML=`<div class="topline"><button onclick="renderList()">← Arşive dön</button><span class="badge">${esc(it.season||"Balkes Arşivi")}</span><span class="badge">${it.imageCount||0} foto</span><span class="badge">${it.tables?.length||0} tablo</span></div><h1>${esc(it.title)}</h1><div class="article">${article(it)}</div>${gallery(it)}${tables(it)}`;location.hash=id;scrollTo({top:0,behavior:"smooth"})}
+async function boot(){ITEMS=await fetch("data/items.json",{cache:"no-store"}).then(r=>r.json());$("#count").textContent=ITEMS.length+" içerik";search.addEventListener("input",renderList);renderList();if(location.hash.length>1){openItem(decodeURIComponent(location.hash.slice(1)))}}
 boot();

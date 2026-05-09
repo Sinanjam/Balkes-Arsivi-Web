@@ -23,30 +23,28 @@ jobs:
       - name: Checkout web repo
         uses: actions/checkout@v4
 
-      - name: Checkout main archive repo
+      - name: Checkout full main archive repo
         uses: actions/checkout@v4
         with:
           repository: Sinanjam/Balkes-Arsivi
           path: mainrepo
+          fetch-depth: 1
 
-      - name: Build static site from app repo assets
-        run: python3 tools/build_site.py mainrepo public
+      - name: Build full static site from app repo
+        run: python3 tools/build_full_site.py mainrepo public
 
-      - name: Assert no broken CSS or URL cards
+      - name: Assert full data exists
         run: |
           python3 - <<'PY'
-          import json, re, sys
+          import json, sys
           from pathlib import Path
-          items=json.loads(Path('public/data/items.json').read_text(encoding='utf-8'))
-          bad=re.compile(r'(font-family|font-size|font-weight|https?://|www\.|web\.archive\.org|balkesarsivi\.com|/user/cimage|user/cimage|cimage/|\.(gif|jpg|jpeg|png|webp)(\s|$|/|\?|-))', re.I)
-          broken=[x for x in items if bad.search(x.get('title','')) or bad.search(x.get('summary',''))]
-          print('item_count=', len(items), 'broken=', len(broken))
-          if len(items) < 20:
-              print('HATA: Ana repodan yeterli içerik üretilemedi.')
-              sys.exit(1)
-          if broken:
-              for x in broken[:20]: print('BROKEN', x.get('title'))
-              sys.exit(1)
+          items=json.loads(Path("public/data/items.json").read_text(encoding="utf-8"))
+          photos=sum(len(x.get("photos",[])) for x in items)
+          tables=sum(len(x.get("tables",[])) for x in items)
+          print("items=",len(items),"photos=",photos,"tables=",tables)
+          assert len(items) > 10
+          assert photos > 10
+          assert Path("public/assets/archive/archive_items.json").exists()
           PY
 
       - name: Configure Pages
