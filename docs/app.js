@@ -23,10 +23,12 @@ function normalizeTR(s) {
 }
 
 function archiveOf(it) {
+  if (it.sourceType === "submission") return "submission";
   return it.sourceType === "marat10lar" ? "marat10lar" : "balkes";
 }
 
 function archiveLabel(it) {
+  if (archiveOf(it) === "submission") return "Sizden Gelenler";
   return archiveOf(it) === "marat10lar" ? "Marat10lar Arşivi" : "Balkes Arşivi";
 }
 
@@ -44,6 +46,7 @@ ITEMS = ITEMS.map((it) => ({ ...it, _search: itemHaystack(it) }));
 function encAsset(p, it) {
   const val = String(p || "");
   if (val.startsWith("http://") || val.startsWith("https://")) return val;
+  if (val.startsWith("assets/")) return val;
   if (archiveOf(it) === "marat10lar") {
     return "assets/" + val.split("/").map(encodeURIComponent).join("/");
   }
@@ -121,7 +124,7 @@ function renderList() {
 
   const count = $("#count");
   if (count) {
-    const label = selectedArchive === "balkes" ? "Balkes Arşivi" : selectedArchive === "marat10lar" ? "Marat10lar Arşivi" : "Tüm arşivler";
+    const label = selectedArchive === "balkes" ? "Balkes Arşivi" : selectedArchive === "marat10lar" ? "Marat10lar Arşivi" : selectedArchive === "submission" ? "Sizden Gelenler" : "Tüm arşivler";
     count.textContent = `${label} · ${arr.length} içerik`;
   }
 
@@ -267,7 +270,7 @@ function boot() {
     toolbar.insertAdjacentHTML("afterend", `
       <section id="archive-switch" class="archive-switch" aria-label="Arşiv seçimi">
         <button type="button" data-archive="balkes" onclick="setArchiveFilter('balkes')">Balkes Arşivi</button>
-        <button type="button" data-archive="marat10lar" onclick="setArchiveFilter('marat10lar')">Marat10lar Arşivi</button>
+        <button type="button" data-archive="marat10lar" onclick="setArchiveFilter('marat10lar')">Marat10lar Arşivi</button>\n        <button type="button" data-archive="submission" onclick="setArchiveFilter('submission')">Sizden Gelenler</button>
       </section>
     `);
   }
@@ -283,3 +286,12 @@ function boot() {
 }
 
 boot();
+
+
+window.BALKES_ADD_DYNAMIC_ITEMS = function(newItems){
+  const incoming = Array.isArray(newItems) ? newItems : [];
+  const withoutDynamic = ITEMS.filter((it) => it.sourceType !== "submission");
+  ITEMS = withoutDynamic.concat(incoming).map((it) => ({ ...it, _search: itemHaystack(it) }));
+  renderArchiveSwitch();
+  renderList();
+};

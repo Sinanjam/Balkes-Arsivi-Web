@@ -31,6 +31,12 @@
           <span>Toplam ziyaretçi</span>
           <strong id="visitor-count">Sayaç bekleniyor</strong>
         </div>
+
+        <button class="submit-card" id="open-submit" type="button">
+          <span class="submit-kicker">Sizden Gelenler</span>
+          <b>Yazı Gönder</b>
+          <small>Gönderiniz onaylandıktan sonra yayınlanır.</small>
+        </button>
       </aside>
     </div>
   </header>
@@ -46,9 +52,40 @@
     <section id="grid" class="grid"></section>
   </main>
 
+
+  <section class="submit-modal" id="submit-modal" aria-label="Yazı gönderme formu" hidden>
+    <div class="submit-backdrop" id="close-submit-backdrop"></div>
+    <form class="submit-panel" id="submit-form">
+      <button class="submit-close" id="close-submit" type="button" aria-label="Kapat">×</button>
+      <div class="archive-mark">Sizden Gelenler</div>
+      <h2>Yazı Gönder</h2>
+      <p>Gönderiniz incelendikten sonra yayınlanacaktır.</p>
+
+      <label>
+        Başlık
+        <input id="sg-title" maxlength="120" minlength="3" required placeholder="Yazı başlığı">
+      </label>
+
+      <label>
+        Rumuz
+        <input id="sg-author" maxlength="60" placeholder="Adınız veya rumuzunuz">
+      </label>
+
+      <label>
+        Yazı
+        <textarea id="sg-body" minlength="10" maxlength="8000" required placeholder="Yazınızı buraya yazın..."></textarea>
+      </label>
+
+      <div class="submit-note">Fotoğraf gönderimi şimdilik kapalıdır. Yazılarda temsili görsel kullanılır.</div>
+      <button class="submit-send" type="submit">Gönder</button>
+      <div class="submit-status" id="submit-status"></div>
+    </form>
+  </section>
+
   <footer>Balkes Arşivi</footer>
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script type="module" src="sizden-gelenler.js"></script>
   <script data-goatcounter="https://sinanjam.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
   <script src="goatcounter.js"></script>
 </body>
